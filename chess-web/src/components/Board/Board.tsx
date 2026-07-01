@@ -1,13 +1,19 @@
 import React from 'react';
-import styles from './Board.module.css';
+import { Chessboard } from 'react-chessboard';
 
-export default function Board() {
+interface BoardProps {
+  fen: string;
+  onMove: (move: { from: string; to: string; promotion?: string }) => boolean;
+}
+
+export default function Board({ fen, onMove }: BoardProps) {
+  function onDrop(sourceSquare: string, targetSquare: string) {
+    return onMove({ from: sourceSquare, to: targetSquare, promotion: 'q' });
+  }
+
   return (
-    <div className={styles.boardContainer}>
-      {/* Stub: O react-chessboard será instanciado aqui. 
-          O dev deverá conectá-lo ao estado do chess.js (através de props ou do hook useChessGame) */}
-      <h2>Tabuleiro</h2>
-      <div className={styles.placeholder}>[react-chessboard aqui]</div>
+    <div style={{ width: '400px' }}>
+      <Chessboard position={fen} onPieceDrop={onDrop} />
     </div>
   );
 }

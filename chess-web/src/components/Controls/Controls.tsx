@@ -1,13 +1,18 @@
 import React from 'react';
-import styles from './Controls.module.css';
 
-export default function Controls() {
+interface ControlsProps {
+  undo: () => void;
+  reset: () => void;
+  analyze: () => void;
+  isLoading: boolean;
+}
+
+export default function Controls({ undo, reset, analyze, isLoading }: ControlsProps) {
   return (
-    <div className={styles.controlsContainer}>
-      {/* Stub: Botões para desfazer lance, resetar jogo e forçar análise */}
-      <button className={styles.btn}>Desfazer</button>
-      <button className={styles.btn}>Resetar</button>
-      <button className={`${styles.btn} ${styles.primary}`}>Analisar FEN</button>
+    <div>
+      <button onClick={undo} disabled={isLoading}>Undo</button>
+      <button onClick={reset} disabled={isLoading}>Reset</button>
+      <button onClick={analyze} disabled={isLoading}>{isLoading ? 'Analisando...' : 'Analisar'}</button>
     </div>
   );
 }

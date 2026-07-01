@@ -1,14 +1,16 @@
 import React from 'react';
-import styles from './AnalysisPanel.module.css';
 
-export default function AnalysisPanel() {
+interface AnalysisPanelProps {
+  analysis: any;
+  error: string | null;
+}
+
+export default function AnalysisPanel({ analysis, error }: AnalysisPanelProps) {
   return (
-    <div className={styles.panel}>
-      <h3>Análise (chess-api.com)</h3>
-      {/* Stub: O dev irá mostrar aqui a melhor jogada (best move), a avaliação e a continuação calculada pela engine */}
-      <div className={styles.content}>
-        <p>Aguardando integração com a API...</p>
-      </div>
+    <div>
+      <h3>Análise</h3>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <pre>{JSON.stringify(analysis, null, 2)}</pre>
     </div>
   );
 }
