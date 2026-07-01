@@ -1,0 +1,16 @@
+.boardContainer {
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1;
+  background: var(--panel-bg);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.placeholder {
+  color: #888;
+  font-style: italic;
+}
