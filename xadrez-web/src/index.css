@@ -1,0 +1,654 @@
+/* Reset e Configurações Globais */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --fonte-principal: 'Outfit', sans-serif;
+  --fonte-apoio: 'Inter', sans-serif;
+  
+  /* Cores Base HSL do Design Guide */
+  --cor-fundo: hsl(240, 10%, 4%);
+  --cor-fundo-card: hsl(240, 10%, 9%);
+  --cor-fundo-card-hover: hsl(240, 6%, 15%);
+  --cor-borda: hsla(240, 5%, 84%, 0.08);
+  --cor-primaria: hsl(263, 70%, 50%); /* Roxo elétrico */
+  --cor-primaria-hover: hsl(263, 75%, 45%);
+  --cor-texto: hsl(0, 0%, 98%); /* Text Primary */
+  --cor-texto-mutado: hsl(240, 5%, 65%); /* Text Secondary */
+  
+  /* Cores Temáticas de Sinalização */
+  --cor-secundaria: hsl(217, 91%, 60%);
+  --cor-sucesso: hsl(142, 72%, 40%);
+  --cor-perigo: hsl(0, 84%, 60%);
+  --cor-alerta: hsl(38, 92%, 50%);
+  
+  /* Destacamento e Highlights de Jogo */
+  --cor-lance-highlight: hsla(45, 100%, 50%, 0.2);
+  --cor-xeque-check: hsla(0, 100%, 50%, 0.25);
+  --cor-movimento-hint: hsla(0, 0%, 100%, 0.15);
+  --cor-captura-hint: hsla(0, 100%, 50%, 0.15);
+}
+
+body {
+  font-family: var(--fonte-apoio);
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6, .titulo-outfit {
+  font-family: var(--fonte-principal);
+}
+
+/* Scrollbar Personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cor-fundo);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cor-primaria);
+}
+
+/* Estrutura Central e Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+/* Glassmorphism e Componentes Elegantes */
+.cartao-vidro {
+  background: var(--cor-fundo-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cartao-vidro:hover {
+  border-color: hsla(263, 70%, 50%, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px hsla(263, 70%, 50%, 0.04);
+}
+
+/* Tipografia — escalas do Design Guide */
+h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  font-family: var(--fonte-principal);
+  background: linear-gradient(135deg, hsl(0, 0%, 98%) 25%, var(--cor-primaria) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+h2 {
+  font-size: 1.5rem; /* 1.5rem conforme design guide para títulos de seção */
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: hsl(0, 0%, 98%);
+}
+
+h3 {
+  font-size: 1.125rem; /* nomes de jogadores e painéis */
+  font-weight: 500;
+  color: var(--cor-texto);
+}
+
+p {
+  color: var(--cor-texto-mutado);
+  font-size: 0.875rem; /* 0.875rem conforme design guide para corpo */
+  font-family: var(--fonte-apoio);
+  line-height: 1.6;
+}
+
+/* Botões Modernos */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--fonte-principal);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  user-select: none;
+}
+
+.botao:active {
+  transform: scale(0.97);
+}
+
+.botao-primario {
+  background: linear-gradient(135deg, var(--cor-primaria) 0%, #7c3aed 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.3);
+}
+
+.botao-primario:hover {
+  background: linear-gradient(135deg, #9c73f8 0%, #8b5cf6 100%);
+  box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.45);
+}
+
+.botao-secundario {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+}
+
+.botao-secundario:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.botao-perigo {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.botao-perigo:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.botao-sucesso {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.botao-sucesso:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #10b981;
+  color: #fff;
+}
+
+.botao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Inputs e Formulários */
+.campo-texto {
+  background: hsla(240, 10%, 6%, 0.8);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  color: hsl(0, 0%, 98%);
+  font-family: var(--fonte-apoio);
+  font-size: 0.9rem;
+  padding: 0.65rem 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.campo-texto:focus {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px hsla(263, 70%, 50%, 0.18);
+}
+
+.campo-texto::placeholder {
+  color: hsl(240, 5%, 45%);
+}
+
+.campo-etiqueta {
+  display: block;
+  font-size: 0.75rem; /* 0.75rem conforme design guide para rótulos */
+  font-weight: 500;
+  font-family: var(--fonte-apoio);
+  letter-spacing: 0.03em;
+  color: var(--cor-texto-mutado);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+/* Layout De Abas e Cabeçalho */
+.cabecalho-app {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.abas-navegacao {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--cor-fundo-card);
+  padding: 0.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+}
+
+.aba-item {
+  background: transparent;
+  border: none;
+  color: var(--cor-texto-mutado);
+  font-family: var(--fonte-principal);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.aba-item:hover {
+  color: var(--cor-texto);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.aba-item.ativa {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.25);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+}
+
+.aba-item::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background-color: var(--cor-primaria);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aba-item.ativa::after {
+  transform: scaleX(1);
+}
+
+/* Layout de Duas Colunas da Tela de Jogo */
+.layout-jogo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .layout-jogo {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+/* Tabuleiro e Peças */
+.area-tabuleiro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Mobile: tabuleiro ocupa 95vw */
+@media (max-width: 1023px) {
+  .tabuleiro-container-central {
+    width: 95vw;
+    max-width: 95vw;
+  }
+}
+
+.tabuleiro-container-central {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--cor-borda);
+}
+
+/* Relógio e Informações do Jogador */
+.painel-jogador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: hsla(240, 10%, 9%, 0.8);
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+}
+
+.jogador-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.jogador-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: hsl(0, 0%, 98%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--fonte-principal);
+  font-size: 0.9rem;
+  border: 2px solid hsla(0, 0%, 100%, 0.08);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.jogador-nome {
+  font-weight: 500;
+  font-size: 1.125rem; /* 1.125rem conforme design guide */
+  font-family: var(--fonte-principal);
+  color: hsl(0, 0%, 98%);
+}
+
+/* Relógio: base inativo */
+.jogador-relogio {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+  background: hsla(240, 10%, 6%, 0.9);
+  color: hsl(240, 5%, 50%); /* inativo: acinzentado */
+  min-width: 100px;
+  text-align: center;
+  border: 1px solid hsla(240, 5%, 84%, 0.06);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  letter-spacing: 0.04em;
+}
+
+.jogador-relogio.ativo {
+  background: hsla(142, 72%, 40%, 0.1);
+  color: hsl(142, 72%, 60%);
+  border-color: hsla(142, 72%, 40%, 0.25);
+  animation: pulso 2s infinite ease-in-out;
+}
+
+.jogador-relogio.alerta {
+  background: hsla(0, 84%, 60%, 0.12);
+  color: hsl(0, 84%, 65%);
+  border-color: hsla(0, 84%, 60%, 0.3);
+  animation: pulso-alerta 0.8s infinite ease-in-out;
+}
+
+/* Painel de Controle Lateral */
+.painel-controle {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.lista-lances {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  padding: 0.75rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.lista-lances-grid {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.lance-numero {
+  color: var(--cor-texto-mutado);
+  font-weight: 500;
+  text-align: right;
+  padding-right: 0.5rem;
+}
+
+.lance-texto {
+  cursor: pointer;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  transition: background 0.1s ease;
+}
+
+.lance-texto:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lance-texto.ativo {
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--cor-primaria);
+  font-weight: 600;
+}
+
+/* Overlay de Fim de Jogo */
+.overlay-fim-jogo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 15, 25, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 10;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+/* Seletor de Modos */
+.grade-modos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .grade-modos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.modo-opcao {
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modo-opcao:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.03);
+}
+
+.modo-opcao.ativo {
+  border-color: var(--cor-primaria);
+  background: rgba(139, 92, 246, 0.07);
+}
+
+/* Modais */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.5rem;
+}
+
+.modal-conteudo {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Dicionário "Aprender" */
+.layout-aprender {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 800px) {
+  .layout-aprender {
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+.lista-itens-aprender {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-aprender-botao {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto-mutado);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--fonte-principal);
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.item-aprender-botao:hover, .item-aprender-botao.ativo {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--cor-primaria);
+  color: #fff;
+}
+
+/* Animações */
+@keyframes pulso {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.4);
+  }
+}
+
+@keyframes pulso-alerta {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.5);
+  }
+}
+
+/* Rotação 3D do Tabuleiro */
+.tabuleiro-container-central {
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.tabuleiro-rotacionado {
+  transform: rotateZ(180deg);
+}
+
+/* Rotaciona as peças de volta para ficarem verticais */
+.tabuleiro-rotacionado [data-piece], 
+.tabuleiro-rotacionado [draggable="true"],
+.tabuleiro-rotacionado [data-testid*="piece"],
+.tabuleiro-rotacionado svg {
+  transform: rotateZ(-180deg);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estilos de realce no tabuleiro Cyberpunk */
+.tabuleiro-cyberpunk {
+  box-shadow: 0 0 35px hsla(263, 70%, 50%, 0.35), inset 0 0 15px hsla(263, 70%, 50%, 0.2) !important;
+  border: 1px solid hsla(263, 70%, 50%, 0.4) !important;
+}
+
+/* Sinalização de Xeque */
+@keyframes xeque-pulso {
+  0%, 100% { background-color: hsla(0, 100%, 50%, 0.15); }
+  50% { background-color: hsla(0, 100%, 50%, 0.45); }
+}
+
+.casa-xeque {
+  animation: xeque-pulso 0.5s ease-in-out infinite;
+}
+
+/* Alerta de tempo crítico e vibração */
+@keyframes pulso-vermelho-suave {
+  0%, 100% {
+    border-color: hsla(0, 84%, 60%, 0.3);
+    box-shadow: 0 0 0 0 hsla(0, 84%, 60%, 0.2);
+  }
+  50% {
+    border-color: hsla(0, 84%, 60%, 0.8);
+    box-shadow: 0 0 8px 2px hsla(0, 84%, 60%, 0.3);
+  }
+}
+
+@keyframes vibracao-leve {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-0.5px, 0.5px); }
+  40% { transform: translate(0.5px, -0.5px); }
+  60% { transform: translate(-0.5px, -0.5px); }
+  80% { transform: translate(0.5px, 0.5px); }
+}
+
+.jogador-relogio.critico {
+  background: hsla(0, 84%, 60%, 0.15) !important;
+  color: hsl(0, 84%, 60%) !important;
+  border: 1px solid hsla(0, 84%, 60%, 0.4) !important;
+  animation: pulso-vermelho-suave 1s infinite ease-in-out, vibracao-leve 0.15s infinite !important;
+}
