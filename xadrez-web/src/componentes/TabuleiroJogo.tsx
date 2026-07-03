@@ -10,7 +10,7 @@ interface PropriedadesTabuleiro {
   temaTabuleiro: TemaTabuleiro;
   temaPecas: TemaPecas;
   casasDestacadas?: Record<string, React.CSSProperties>; // Highlights externos (xeque, lances, hints)
-  rotacionado?: boolean; // Controla a rotação 3D do tabuleiro
+
 }
 
 // Paleta HSL alinhada ao design guide - moderno, premium e escuro
@@ -169,8 +169,7 @@ export default function TabuleiroJogo({
   interativo = true,
   temaTabuleiro,
   temaPecas,
-  casasDestacadas = {},
-  rotacionado = false
+  casasDestacadas = {}
 }: PropriedadesTabuleiro) {
   const { estiloTabuleiro, casaEscura, casaClara } = OBTER_ESTILOS_CASAS(temaTabuleiro);
 
@@ -199,13 +198,8 @@ export default function TabuleiroJogo({
     });
   }
 
-  const classesContainer = [
-    'tabuleiro-container-central',
-    rotacionado ? 'tabuleiro-rotacionado' : ''
-  ].filter(Boolean).join(' ');
-
   return (
-    <div className={classesContainer}>
+    <div className="tabuleiro-container-central">
       <Chessboard
         position={fen}
         onPieceDrop={aoArrastarPeca}

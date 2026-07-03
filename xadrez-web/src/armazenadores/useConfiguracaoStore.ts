@@ -18,7 +18,7 @@ export const useConfiguracaoStore = create<EstadoConfiguracao>()(
     (set) => ({
       temaTabuleiro: 'moderno-gelo',
       temaPecas: 'neo-classico',
-      rotacaoAutomaticaLocal: true,
+      rotacaoAutomaticaLocal: false,
       definirTemaTabuleiro: (tema) => set({ temaTabuleiro: tema }),
       definirTemaPecas: (tema) => set({ temaPecas: tema }),
       definirRotacaoAutomaticaLocal: (valor) => set({ rotacaoAutomaticaLocal: valor }),

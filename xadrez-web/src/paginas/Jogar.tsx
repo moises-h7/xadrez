@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Play, Pause, Flag, HelpCircle, RotateCcw, Bot } from 'lucide-react';
+import { Play, Pause, Flag, HelpCircle, RotateCcw, RotateCw, Bot } from 'lucide-react';
 import { useJogoStore } from '../armazenadores/useJogoStore';
 import { usePerfilStore } from '../armazenadores/usePerfilStore';
 import { useConfiguracaoStore } from '../armazenadores/useConfiguracaoStore';
@@ -33,7 +33,7 @@ export default function Jogar() {
   } = useJogoStore();
 
   const { perfilGeral, oponenteLocal, adicionarPartida, token, sincronizarComNuvem } = usePerfilStore();
-  const { temaTabuleiro, temaPecas, rotacaoAutomaticaLocal } = useConfiguracaoStore();
+  const { temaTabuleiro, temaPecas, rotacaoAutomaticaLocal, definirRotacaoAutomaticaLocal } = useConfiguracaoStore();
 
   // Estado local de seleção de peças para dicas visuais
   const [casaSelecionada, definirCasaSelecionada] = useState<string | null>(null);
@@ -234,18 +234,16 @@ export default function Jogar() {
     return fazerLance(de, para, promocaoAuto);
   };
 
-  // Define orientação do tabuleiro
+  // Define orientação do tabuleiro (usa boardOrientation nativo, sem CSS transform)
   let orientacaoTabuleiro: 'white' | 'black' = 'white';
-  let tabuleiroRotacionado = false;
 
   if (configuracao) {
     if (configuracao.modo === 'robo') {
       orientacaoTabuleiro = configuracao.corJogador === 'b' ? 'black' : 'white';
     } else {
-      // 1v1 Local: gira se rotação ativada
+      // 1v1 Local: gira via boardOrientation se rotação ativada
       if (configuracao.rotacaoAutomatica && rotacaoAutomaticaLocal) {
         orientacaoTabuleiro = corAtiva === 'b' ? 'black' : 'white';
-        tabuleiroRotacionado = corAtiva === 'b';
       } else {
         orientacaoTabuleiro = configuracao.corJogador1 === 'b' ? 'black' : 'white';
       }
@@ -358,36 +356,45 @@ export default function Jogar() {
             temaTabuleiro={temaTabuleiro}
             temaPecas={temaPecas}
             casasDestacadas={casasDestacadas}
-            rotacionado={tabuleiroRotacionado}
           />
 
           {/* Overlay de Partida Encerrada */}
-          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (
-            <div className="overlay-fim-jogo">
-              <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
-              <div style={{
-                margin: '0.5rem 0',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
-                fontFamily: 'var(--fonte-apoio)'
-              }}>
-                {statusJogo === 'xeque_mate' && `Xeque-mate! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'tempo_esgotado' && `Tempo esgotado! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'desistencia' && `Desistência! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'empate' && `Empate por ${
-                  motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
-                  motivoEmpate === 'material_insuficiente' ? 'Material Insuficiente' :
-                  motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
-                  motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
-                }`}
+          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (() => {
+            // Resolve nomes dos jogadores para exibição
+            const nomeVencedor = vencedor
+              ? (vencedor === 'w' ? infoBrancas.nome : infoPretas.nome)
+              : null;
+            const nomePerdedor = vencedor
+              ? (vencedor === 'w' ? infoPretas.nome : infoBrancas.nome)
+              : null;
+
+            return (
+              <div className="overlay-fim-jogo">
+                <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
+                <div style={{
+                  margin: '0.5rem 0',
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
+                  fontFamily: 'var(--fonte-apoio)'
+                }}>
+                  {statusJogo === 'xeque_mate' && `${nomeVencedor} ganhou por xeque-mate!`}
+                  {statusJogo === 'tempo_esgotado' && `${nomeVencedor} ganhou por tempo esgotado!`}
+                  {statusJogo === 'desistencia' && `${nomePerdedor} desistiu — ${nomeVencedor} venceu!`}
+                  {statusJogo === 'empate' && `Empate por ${
+                    motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
+                    motivoEmpate === 'material_insuficiente' ? 'Material Insuficiente' :
+                    motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
+                    motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
+                  }`}
+                </div>
+                <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
+                  <RotateCcw size={16} />
+                  <span>Nova Partida</span>
+                </button>
               </div>
-              <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
-                <RotateCcw size={16} />
-                <span>Nova Partida</span>
-              </button>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* Painel do Jogador (Inferior) */}
@@ -445,10 +452,19 @@ export default function Jogar() {
           {statusJogo === 'jogando' && (
             <>
               {configuracao.modo === 'local' && (
-                <button onClick={alternarPausa} className={`botao ${pausado ? 'botao-sucesso' : 'botao-secundario'}`}>
-                  {pausado ? <Play size={16} /> : <Pause size={16} />}
-                  <span>{pausado ? 'Retomar Jogo' : 'Pausar Jogo'}</span>
-                </button>
+                <>
+                  <button onClick={alternarPausa} className={`botao ${pausado ? 'botao-sucesso' : 'botao-secundario'}`}>
+                    {pausado ? <Play size={16} /> : <Pause size={16} />}
+                    <span>{pausado ? 'Retomar Jogo' : 'Pausar Jogo'}</span>
+                  </button>
+                  <button
+                    onClick={() => definirRotacaoAutomaticaLocal(!rotacaoAutomaticaLocal)}
+                    className={`botao ${rotacaoAutomaticaLocal ? 'botao-sucesso' : 'botao-secundario'}`}
+                  >
+                    <RotateCw size={16} />
+                    <span>{rotacaoAutomaticaLocal ? 'Rotação: Ativada' : 'Rotação: Desativada'}</span>
+                  </button>
+                </>
               )}
 
               <div style={{ display: 'flex', gap: '0.5rem' }}>

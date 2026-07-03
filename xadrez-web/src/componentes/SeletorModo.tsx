@@ -15,7 +15,7 @@ export default function SeletorModo({ aoIniciarJogo }: PropriedadesSeletor) {
   const [tempoLimite, setTempoLimite] = useState<number>(10); // minutos (10 default)
 
   // Configurações Local 1v1
-  const [rotacaoAutomatica, setRotacaoAutomatica] = useState<boolean>(true);
+  const [rotacaoAutomatica, setRotacaoAutomatica] = useState<boolean>(false);
   const [corJogador1, setCorJogador1] = useState<'w' | 'b' | 'random'>('w');
 
   const iniciar = () => {
