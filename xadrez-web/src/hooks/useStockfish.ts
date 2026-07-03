@@ -6,12 +6,16 @@ interface PropriedadesStockfish {
 
 export function useStockfish({ aoReceberLance }: PropriedadesStockfish) {
   const workerRef = useRef<Worker | null>(null);
+  // Ref estável para o callback — evita recriar o worker a cada render
+  const callbackRef = useRef(aoReceberLance);
+  callbackRef.current = aoReceberLance;
 
-  // Inicializa o Web Worker
+  // Inicializa o Web Worker uma única vez
   useEffect(() => {
-    // Carrega o worker usando o padrão do Vite para workers URL
-    const urlWorker = new URL('../trabalhadores/stockfish.trabalhador.ts', import.meta.url);
-    const trabalhador = new Worker(urlWorker, { type: 'module' });
+    // Worker clássico servido de public/ — compatível com todos os browsers e GitHub Pages
+    // import.meta.env.BASE_URL garante o path correto tanto em dev quanto no Pages
+    const workerUrl = `${import.meta.env.BASE_URL}stockfish.worker.js`;
+    const trabalhador = new Worker(workerUrl);
 
     trabalhador.onmessage = (evento: MessageEvent) => {
       const linha = evento.data;
@@ -22,68 +26,48 @@ export function useStockfish({ aoReceberLance }: PropriedadesStockfish) {
           const de = melhorLance.slice(0, 2);
           const para = melhorLance.slice(2, 4);
           const promocao = melhorLance.length > 4 ? melhorLance.charAt(4) : undefined;
-          
-          aoReceberLance(de, para, promocao);
+          callbackRef.current(de, para, promocao);
         }
       }
     };
 
-    // Inicializa o motor com o protocolo UCI
+    trabalhador.onerror = (e) => {
+      console.error('[Stockfish] Erro no worker:', e.message);
+    };
+
+    // Inicializa o protocolo UCI
     trabalhador.postMessage('uci');
     trabalhador.postMessage('isready');
 
     workerRef.current = trabalhador;
 
     return () => {
+      trabalhador.postMessage('quit');
       trabalhador.terminate();
     };
-  }, [aoReceberLance]);
+  }, []); // sem deps — worker vive enquanto o componente viver
 
-  // Envia os comandos correspondentes à dificuldade
   const calcularMelhorLance = useCallback((fen: string, dificuldade: number) => {
     const trabalhador = workerRef.current;
     if (!trabalhador) return;
 
-    // Cancela buscas anteriores em andamento
+    // Cancela busca anterior
     trabalhador.postMessage('stop');
 
-    // Mapeamento de dificuldade conforme a especificação
-    let nivelHabilidade = 10;
-    let profundidade = 8;
-    let tempoCalculo = 800;
+    // Mapeamento de dificuldade → parâmetros UCI
+    const NIVEIS: Record<number, { skill: number; depth: number; movetime: number }> = {
+      1: { skill: 0,  depth: 1,  movetime: 100  }, // Muito Fácil
+      2: { skill: 5,  depth: 3,  movetime: 300  }, // Fácil
+      3: { skill: 10, depth: 8,  movetime: 800  }, // Médio
+      4: { skill: 15, depth: 14, movetime: 1500 }, // Difícil
+      5: { skill: 20, depth: 20, movetime: 3000 }, // Muito Difícil
+    };
 
-    switch (dificuldade) {
-      case 1: // Muito Fácil
-        nivelHabilidade = 0;
-        profundidade = 1;
-        tempoCalculo = 100;
-        break;
-      case 2: // Fácil
-        nivelHabilidade = 5;
-        profundidade = 3;
-        tempoCalculo = 300;
-        break;
-      case 3: // Médio
-        nivelHabilidade = 10;
-        profundidade = 8;
-        tempoCalculo = 800;
-        break;
-      case 4: // Difícil
-        nivelHabilidade = 15;
-        profundidade = 14;
-        tempoCalculo = 1500;
-        break;
-      case 5: // Muito Difícil
-        nivelHabilidade = 20;
-        profundidade = 20;
-        tempoCalculo = 3000;
-        break;
-    }
+    const nivel = NIVEIS[dificuldade] ?? NIVEIS[3];
 
-    // Configura a dificuldade no motor
-    trabalhador.postMessage(`setoption name Skill Level value ${nivelHabilidade}`);
+    trabalhador.postMessage(`setoption name Skill Level value ${nivel.skill}`);
     trabalhador.postMessage(`position fen ${fen}`);
-    trabalhador.postMessage(`go depth ${profundidade} movetime ${tempoCalculo}`);
+    trabalhador.postMessage(`go depth ${nivel.depth} movetime ${nivel.movetime}`);
   }, []);
 
   return { calcularMelhorLance };

@@ -48,14 +48,20 @@ export const useJogoStore = create<EstadoJogo>((set, get) => {
 
     configurarJogo: (config) => {
       const novoJogo = new Chess();
-      
-      // Define a cor de forma randômica se aplicável
+
+      // Resolve cores aleatórias
       let corJogadorAtribuida = config.corJogador;
       if (config.modo === 'robo' && config.corJogador === 'random') {
         corJogadorAtribuida = Math.random() < 0.5 ? 'w' : 'b';
       }
 
-      // Calcula os tempos iniciais (milisegundos)
+      let corJogador1Atribuida = config.corJogador1;
+      if (config.modo === 'local' && config.corJogador1 === 'random') {
+        corJogador1Atribuida = Math.random() < 0.5 ? 'w' : 'b';
+      }
+      const corJogador2Atribuida = corJogador1Atribuida === 'w' ? 'b' : 'w';
+
+      // Tempos iniciais (ms)
       const tempoInicial = config.tempoLimiteMinutos * 60 * 1000;
 
       set({
@@ -71,7 +77,9 @@ export const useJogoStore = create<EstadoJogo>((set, get) => {
         motivoEmpate: null,
         configuracao: {
           ...config,
-          corJogador: corJogadorAtribuida // atualiza cor caso randomizada
+          corJogador: corJogadorAtribuida,
+          corJogador1: corJogador1Atribuida,
+          corJogador2: corJogador2Atribuida,
         },
         inicioTurnoTimestamp: Date.now(),
         pausado: false,
@@ -177,7 +185,9 @@ export const useJogoStore = create<EstadoJogo>((set, get) => {
           set({ tempoBrancas: 0 });
           encerrarPorTempo();
         } else {
-          set({ tempoBrancas: tempoRestante, inicioTurnoTimestamp: agora });
+          // Não avança inicioTurnoTimestamp: mantém o timestamp original do início do turno
+          // O relógio sempre calcula "tempo_base - (agora - inicio_turno)"
+          set({ tempoBrancas: tempoRestante });
         }
       } else {
         const tempoRestante = tempoPretas - tempoDecorrido;
@@ -185,7 +195,7 @@ export const useJogoStore = create<EstadoJogo>((set, get) => {
           set({ tempoPretas: 0 });
           encerrarPorTempo();
         } else {
-          set({ tempoPretas: tempoRestante, inicioTurnoTimestamp: agora });
+          set({ tempoPretas: tempoRestante });
         }
       }
     },

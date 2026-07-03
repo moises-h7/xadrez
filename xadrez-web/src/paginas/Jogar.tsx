@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, Pause, Flag, HelpCircle, RotateCcw, RotateCw, Bot } from 'lucide-react';
 import { useJogoStore } from '../armazenadores/useJogoStore';
 import { usePerfilStore } from '../armazenadores/usePerfilStore';
@@ -39,26 +39,28 @@ export default function Jogar() {
   const [casaSelecionada, definirCasaSelecionada] = useState<string | null>(null);
   const [casasDestacadas, definirCasasDestacadas] = useState<Record<string, React.CSSProperties>>({});
 
+  // Callback estável para o Stockfish — useCallback evita recriar o worker a cada render
+  const aoReceberLanceStockfish = useCallback((de: string, para: string, promocao?: string) => {
+    fazerLance(de, para, promocao);
+  }, [fazerLance]);
+
   // Inicializa a IA do Stockfish
   const { calcularMelhorLance } = useStockfish({
-    aoReceberLance: (de, para, promocao) => {
-      fazerLance(de, para, promocao);
-    }
+    aoReceberLance: aoReceberLanceStockfish
   });
 
-  // Loop de alta precisão para atualizar os relógios (requestAnimationFrame)
+  // Loop para atualizar os relógios (~10fps é suficiente para exibir mm:ss)
   useEffect(() => {
     if (statusJogo !== 'jogando' || pausado || !configuracao || configuracao.tempoLimiteMinutos === 0) return;
 
-    let idAnimacao: number;
-    const tick = () => {
-      atualizarRelogios();
-      idAnimacao = requestAnimationFrame(tick);
-    };
-
-    idAnimacao = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(idAnimacao);
+    const intervalo = setInterval(atualizarRelogios, 100);
+    return () => clearInterval(intervalo);
   }, [statusJogo, pausado, configuracao, atualizarRelogios]);
+
+  // Limpa a peça selecionada quando o turno muda (evita peça "presa" entre turnos no modo local)
+  useEffect(() => {
+    definirCasaSelecionada(null);
+  }, [corAtiva]);
 
   // Dispara o lance da IA quando for o turno do Stockfish
   const corRobo = configuracao?.corJogador === 'w' ? 'b' : 'w';
