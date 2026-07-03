@@ -18,7 +18,7 @@ export default function ModalVisualizador({ partida, aoFechar }: PropriedadesVis
   const [indiceAtual, setIndiceAtual] = useState<number>(-1); // -1 é a posição inicial do jogo
   const [reproduzindo, setReproduzindo] = useState<boolean>(false);
   
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const indiceRef = useRef<number>(-1);
   indiceRef.current = indiceAtual;
 

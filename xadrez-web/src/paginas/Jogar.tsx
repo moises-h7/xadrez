@@ -101,8 +101,8 @@ export default function Jogar() {
         corJogador: configuracao?.corJogador === 'b' ? 'b' : 'w',
         resultado,
         finalizadoPor: statusJogo === 'xeque_mate' ? 'checkmate' :
-                       statusJogo === 'tempo_esgotado' ? 'timeout' :
-                       statusJogo === 'desistencia' ? 'resigned' : 'draw_agreement',
+          statusJogo === 'tempo_esgotado' ? 'timeout' :
+            statusJogo === 'desistencia' ? 'resigned' : 'draw_agreement',
         motivoEmpate: motivoEmpate as any,
         duracaoSegundos: Math.max(1, duracaoSegundos),
         totalLances: historicoLances.length,
@@ -130,7 +130,7 @@ export default function Jogar() {
         try {
           const l = jogoAnterior.history({ verbose: true });
           // Precisamos de uma forma de obter a origem/destino de cada lance
-        } catch (_) {}
+        } catch (_) { }
       }
       // Destaca casas via histórico do chess.js
       const jogoParaHistorico = new Chess();
@@ -148,7 +148,7 @@ export default function Jogar() {
               destaques[ultimoDetalhado.from] = { backgroundColor: 'hsla(45, 100%, 50%, 0.2)' };
               destaques[ultimoDetalhado.to] = { backgroundColor: 'hsla(45, 100%, 50%, 0.3)' };
             }
-          } catch (_) {}
+          } catch (_) { }
         }
       }
     }
@@ -359,42 +359,31 @@ export default function Jogar() {
           />
 
           {/* Overlay de Partida Encerrada */}
-          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (() => {
-            // Resolve nomes dos jogadores para exibição
-            const nomeVencedor = vencedor
-              ? (vencedor === 'w' ? infoBrancas.nome : infoPretas.nome)
-              : null;
-            const nomePerdedor = vencedor
-              ? (vencedor === 'w' ? infoPretas.nome : infoBrancas.nome)
-              : null;
-
-            return (
-              <div className="overlay-fim-jogo">
-                <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
-                <div style={{
-                  margin: '0.5rem 0',
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
-                  fontFamily: 'var(--fonte-apoio)'
-                }}>
-                  {statusJogo === 'xeque_mate' && `${nomeVencedor} ganhou por xeque-mate!`}
-                  {statusJogo === 'tempo_esgotado' && `${nomeVencedor} ganhou por tempo esgotado!`}
-                  {statusJogo === 'desistencia' && `${nomePerdedor} desistiu — ${nomeVencedor} venceu!`}
-                  {statusJogo === 'empate' && `Empate por ${
-                    motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
+          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (
+            <div className="overlay-fim-jogo">
+              <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
+              <div style={{
+                margin: '0.5rem 0',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
+                fontFamily: 'var(--fonte-apoio)'
+              }}>
+                {statusJogo === 'xeque_mate' && `Xeque-mate! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
+                {statusJogo === 'tempo_esgotado' && `Tempo esgotado! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
+                {statusJogo === 'desistencia' && `Desistência! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
+                {statusJogo === 'empate' && `Empate por ${motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
                     motivoEmpate === 'material_insuficiente' ? 'Material Insuficiente' :
-                    motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
-                    motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
+                      motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
+                        motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
                   }`}
-                </div>
-                <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
-                  <RotateCcw size={16} />
-                  <span>Nova Partida</span>
-                </button>
               </div>
-            );
-          })()}
+              <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
+                <RotateCcw size={16} />
+                <span>Nova Partida</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Painel do Jogador (Inferior) */}
