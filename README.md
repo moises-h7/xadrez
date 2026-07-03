@@ -1,26 +1,25 @@
 # Xadrez
 
-Plataforma web de xadrez em React + TypeScript.
+Plataforma web de xadrez — React + TypeScript + Stockfish.
 
-## App principal
+**Demo:** https://moises-h7.github.io/xadrez/
 
-O frontend ativo é **`xadrez-web/`** — SPA com tabuleiro, engine Stockfish (Web Worker), histórico local, temas e modos de jogo.
+## Funcionalidades
 
-## Demo (GitHub Pages)
-
-https://moises-h7.github.io/xadrez/
-
-> Login e sincronização na nuvem exigem o backend (`server.js`). No Pages, o jogo local e contra a engine funcionam normalmente.
+- Jogar contra humano local ou contra a engine (Stockfish via Web Worker)
+- Relógio com controle de tempo configurável
+- Histórico de partidas (localStorage)
+- Personalização de tema do tabuleiro
+- Visualizador de partidas com replay de lances
 
 ## Desenvolvimento local
 
 ```bash
 cd xadrez-web
 npm install
-npm run dev          # só frontend (porta 5173)
-npm run ambos        # frontend + API (Linux/macOS)
+npm run dev   # http://localhost:5173
 ```
 
-## chess-web/
+## Deploy
 
-Protótipo anterior alinhado à spec com `chess-api.com`. Mantido apenas como referência; não é publicado no Pages.
+O GitHub Actions builda e publica automaticamente em cada push para `main`.
