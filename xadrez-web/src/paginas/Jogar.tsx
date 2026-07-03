@@ -122,35 +122,18 @@ export default function Jogar() {
     const destaques: Record<string, React.CSSProperties> = {};
     const jogoAtual = new Chess(fen);
 
-    // Destaque do último lance (amarelo translúcido)
-    if (historicoLances.length > 0) {
-      const ultimoLance = historicoLances[historicoLances.length - 1];
-      const jogoAnterior = new Chess();
-      for (let i = 0; i < historicoLances.length - 1; i++) {
-        try {
-          const l = jogoAnterior.history({ verbose: true });
-          // Precisamos de uma forma de obter a origem/destino de cada lance
-        } catch (_) { }
-      }
-      // Destaca casas via histórico do chess.js
-      const jogoParaHistorico = new Chess();
-      const historicoPGN = jogoAtual.history({ verbose: true });
-      // Vamos usar o próprio chess.js com o FEN anterior ao último lance
-      if (ultimoLance.fenDepois) {
-        // Reconstrói para pegar origem/destino via PGN
+    // Destaque do último lance (amarelo translúcido) via PGN
+    if (pgn) {
+      try {
         const jogoTemp = new Chess();
-        if (pgn) {
-          try {
-            jogoTemp.loadPgn(pgn);
-            const todosLances = jogoTemp.history({ verbose: true });
-            const ultimoDetalhado = todosLances[todosLances.length - 1];
-            if (ultimoDetalhado) {
-              destaques[ultimoDetalhado.from] = { backgroundColor: 'hsla(45, 100%, 50%, 0.2)' };
-              destaques[ultimoDetalhado.to] = { backgroundColor: 'hsla(45, 100%, 50%, 0.3)' };
-            }
-          } catch (_) { }
+        jogoTemp.loadPgn(pgn);
+        const todosLances = jogoTemp.history({ verbose: true });
+        const ultimoDetalhado = todosLances[todosLances.length - 1];
+        if (ultimoDetalhado) {
+          destaques[ultimoDetalhado.from] = { backgroundColor: 'hsla(45, 100%, 50%, 0.2)' };
+          destaques[ultimoDetalhado.to] = { backgroundColor: 'hsla(45, 100%, 50%, 0.3)' };
         }
-      }
+      } catch (_) { }
     }
 
     // Destaque da casa selecionada e movimentos possíveis
@@ -194,7 +177,7 @@ export default function Jogar() {
     }
 
     definirCasasDestacadas(destaques);
-  }, [fen, casaSelecionada, pgn, historicoLances]);
+  }, [fen, casaSelecionada, pgn]);
 
   // Handler de clique nas casas do tabuleiro
   const aoClicarCasa = (casa: string) => {
@@ -359,31 +342,40 @@ export default function Jogar() {
           />
 
           {/* Overlay de Partida Encerrada */}
-          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (
-            <div className="overlay-fim-jogo">
-              <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
-              <div style={{
-                margin: '0.5rem 0',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
-                fontFamily: 'var(--fonte-apoio)'
-              }}>
-                {statusJogo === 'xeque_mate' && `Xeque-mate! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'tempo_esgotado' && `Tempo esgotado! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'desistencia' && `Desistência! Vencedor: ${vencedor === 'w' ? 'Brancas' : 'Pretas'}`}
-                {statusJogo === 'empate' && `Empate por ${motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
+          {statusJogo !== 'jogando' && (() => {
+            const nomeVencedor = vencedor
+              ? (vencedor === 'w' ? infoBrancas.nome : infoPretas.nome)
+              : null;
+            const nomePerdedor = vencedor
+              ? (vencedor === 'w' ? infoPretas.nome : infoBrancas.nome)
+              : null;
+            return (
+              <div className="overlay-fim-jogo">
+                <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
+                <div style={{
+                  margin: '0.5rem 0',
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  color: vencedor ? 'hsl(142, 72%, 55%)' : 'var(--cor-texto-mutado)',
+                  fontFamily: 'var(--fonte-apoio)'
+                }}>
+                  {statusJogo === 'xeque_mate' && `${nomeVencedor} ganhou por xeque-mate!`}
+                  {statusJogo === 'tempo_esgotado' && `${nomeVencedor} ganhou por tempo esgotado!`}
+                  {statusJogo === 'desistencia' && `${nomePerdedor} desistiu — ${nomeVencedor} venceu!`}
+                  {statusJogo === 'empate' && `Empate por ${
+                    motivoEmpate === 'afogamento' ? 'Afogamento (Stalemate)' :
                     motivoEmpate === 'material_insuficiente' ? 'Material Insuficiente' :
-                      motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
-                        motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
+                    motivoEmpate === 'tripla_repeticao' ? 'Tríplice Repetição' :
+                    motivoEmpate === '50_movimentos' ? 'Regra dos 50 movimentos' : 'Acordo Mútuo'
                   }`}
+                </div>
+                <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
+                  <RotateCcw size={16} />
+                  <span>Nova Partida</span>
+                </button>
               </div>
-              <button onClick={reiniciarJogo} className="botao botao-primario" style={{ marginTop: '1rem' }}>
-                <RotateCcw size={16} />
-                <span>Nova Partida</span>
-              </button>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* Painel do Jogador (Inferior) */}
