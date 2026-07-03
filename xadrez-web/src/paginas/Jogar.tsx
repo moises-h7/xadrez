@@ -49,11 +49,11 @@ export default function Jogar() {
     aoReceberLance: aoReceberLanceStockfish
   });
 
-  // Loop para atualizar os relógios (~10fps é suficiente para exibir mm:ss)
+  // Loop para atualizar os relógios (1x por segundo é suficiente para exibir mm:ss)
   useEffect(() => {
     if (statusJogo !== 'jogando' || pausado || !configuracao || configuracao.tempoLimiteMinutos === 0) return;
 
-    const intervalo = setInterval(atualizarRelogios, 100);
+    const intervalo = setInterval(atualizarRelogios, 1000);
     return () => clearInterval(intervalo);
   }, [statusJogo, pausado, configuracao, atualizarRelogios]);
 

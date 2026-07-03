@@ -108,18 +108,18 @@ export default function Aprender() {
   const [itemSelecionado, setItemSelecionado] = useState<ItemDicionario>(ITENS_DICIONARIO[0]);
   
   // Estado local do mini-jogo de xadrez para demonstração
-  const [jogoLocal, setJogoLocal] = useState<Chess>(new Chess(itemSelecionado.fenInicial));
+  const [jogoLocal, setJogoLocal] = useState<Chess>(() => new Chess(itemSelecionado.fenInicial, { skipValidation: true }));
   const [fenLocal, setFenLocal] = useState<string>(itemSelecionado.fenInicial);
 
   // Reinicia o mini-tabuleiro ao trocar o item selecionado
   useEffect(() => {
-    const novoJogo = new Chess(itemSelecionado.fenInicial);
+    const novoJogo = new Chess(itemSelecionado.fenInicial, { skipValidation: true });
     setJogoLocal(novoJogo);
     setFenLocal(novoJogo.fen());
   }, [itemSelecionado]);
 
   const resetarPosicao = () => {
-    const novoJogo = new Chess(itemSelecionado.fenInicial);
+    const novoJogo = new Chess(itemSelecionado.fenInicial, { skipValidation: true });
     setJogoLocal(novoJogo);
     setFenLocal(novoJogo.fen());
   };

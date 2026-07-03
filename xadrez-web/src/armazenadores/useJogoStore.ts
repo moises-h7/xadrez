@@ -176,26 +176,25 @@ export const useJogoStore = create<EstadoJogo>((set, get) => {
         return;
       }
 
+      // Desconta exatamente 1 segundo e avança o timestamp de referência
+      // para que o próximo tick calcule a partir do ponto correto
       const agora = Date.now();
-      const tempoDecorrido = agora - inicioTurnoTimestamp;
 
       if (corAtiva === 'w') {
-        const tempoRestante = tempoBrancas - tempoDecorrido;
+        const tempoRestante = tempoBrancas - 1000;
         if (tempoRestante <= 0) {
           set({ tempoBrancas: 0 });
           encerrarPorTempo();
         } else {
-          // Não avança inicioTurnoTimestamp: mantém o timestamp original do início do turno
-          // O relógio sempre calcula "tempo_base - (agora - inicio_turno)"
-          set({ tempoBrancas: tempoRestante });
+          set({ tempoBrancas: tempoRestante, inicioTurnoTimestamp: agora });
         }
       } else {
-        const tempoRestante = tempoPretas - tempoDecorrido;
+        const tempoRestante = tempoPretas - 1000;
         if (tempoRestante <= 0) {
           set({ tempoPretas: 0 });
           encerrarPorTempo();
         } else {
-          set({ tempoPretas: tempoRestante });
+          set({ tempoPretas: tempoRestante, inicioTurnoTimestamp: agora });
         }
       }
     },
