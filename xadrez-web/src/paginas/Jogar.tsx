@@ -362,7 +362,7 @@ export default function Jogar() {
           />
 
           {/* Overlay de Partida Encerrada */}
-          {statusJogo !== 'jogando' && statusJogo !== 'ocioso' && (
+          {statusJogo !== 'jogando' && (
             <div className="overlay-fim-jogo">
               <h2 style={{ fontSize: '2rem', fontFamily: 'var(--fonte-principal)' }}>Fim de Jogo</h2>
               <div style={{

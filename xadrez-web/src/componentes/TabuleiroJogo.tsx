@@ -211,9 +211,9 @@ export default function TabuleiroJogo({
         onPieceDrop={aoArrastarPeca}
         boardOrientation={orientacao}
         arePiecesDraggable={interativo}
-        customBoardStyle={estiloTabuleiro}
-        customDarkSquareStyle={casaEscura}
-        customLightSquareStyle={casaClara}
+        customBoardStyle={estiloTabuleiro as Record<string, string | number>}
+        customDarkSquareStyle={casaEscura as Record<string, string>}
+        customLightSquareStyle={casaClara as Record<string, string>}
         customSquareStyles={casasDestacadas}
         customPieces={Object.keys(pecasCustomizadas).length > 0 ? pecasCustomizadas : undefined}
       />
