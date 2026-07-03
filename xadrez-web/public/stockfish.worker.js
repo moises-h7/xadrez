@@ -1,7 +1,7 @@
 /* Worker clássico (não-module) — carrega Stockfish via importScripts */
 
-// O caminho é relativo à raiz do site (public/)
-importScripts('/stockfish.js');
+// Path relativo: funciona em / (dev) e /xadrez/ (GitHub Pages)
+importScripts('./stockfish.js');
 
 // STOCKFISH() é a factory exposta pelo script acima
 // @ts-ignore
