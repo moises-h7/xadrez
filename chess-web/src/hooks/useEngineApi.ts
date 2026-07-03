@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { getAnalysisFromFen } from '../services/api';
 
 export function useEngineApi() {
@@ -6,18 +6,20 @@ export function useEngineApi() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const fetchAnalysis = async (fen: string) => {
+  const fetchAnalysis = useCallback(async (fen: string) => {
     setIsLoading(true);
     setError(null);
     try {
       const data = await getAnalysisFromFen(fen);
       setAnalysis(data);
+      return data;
     } catch (err: any) {
       setError(err.message || 'Erro desconhecido');
+      return null;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
   
   return { analysis, fetchAnalysis, isLoading, error };
 }
